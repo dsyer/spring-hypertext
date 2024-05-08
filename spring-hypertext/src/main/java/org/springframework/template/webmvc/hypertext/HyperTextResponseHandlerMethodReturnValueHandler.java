@@ -54,7 +54,7 @@ public class HyperTextResponseHandlerMethodReturnValueHandler implements Handler
 
 	@Override
 	public boolean supportsReturnType(MethodParameter returnType) {
-		return returnType.getParameterType().equals(HyperTextResponse.class);
+		return HyperTextResponse.class.isAssignableFrom(returnType.getParameterType());
 	}
 
 	@Override

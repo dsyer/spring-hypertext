@@ -62,7 +62,7 @@ public class MultiViewResolver implements ViewResolver, Ordered {
 			}
 			return new MultiView(templates);
 		} else {
-			return null;
+			return resolver.resolveViewName(name, locale);
 		}
 	}
 

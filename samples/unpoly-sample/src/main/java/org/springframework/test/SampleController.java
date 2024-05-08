@@ -4,8 +4,9 @@ import java.util.Date;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.template.webmvc.hypertext.HyperTextMapping;
 import org.springframework.template.webmvc.hypertext.HyperTextRequest;
+import org.springframework.template.webmvc.unpoly.UnpolyMapping;
+import org.springframework.template.webmvc.unpoly.UnpolyResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,11 +28,11 @@ public class SampleController {
 		return "index";
 	}
 
-	@HyperTextMapping(headers = "hx-request=true")
+	@UnpolyMapping
 	@GetMapping(path = "/")
-	String indexHyper(Map<String, Object> model) {
+	UnpolyResponse indexHyper(Map<String, Object> model) {
 		index(model);
-		return "index::main,layout::menu";
+		return UnpolyResponse.builder().view("index::main").view("layout::menu").build();
 	}
 
 	@GetMapping(path = "/greet")
@@ -55,11 +56,12 @@ public class SampleController {
 	}
 
 	@PostMapping(path = "/greet")
-	String name(Map<String, Object> model, @RequestParam String name, HyperTextRequest hx) {
+	UnpolyResponse name(Map<String, Object> model, @RequestParam String name, HyperTextRequest hx) {
 		greet(model, hx);
 		model.put("greeting", "Hello " + name);
 		model.put("name", name);
-		return hx.isActive() ? "greet::main,layout::menu" : "greet";
+		return hx.isActive() ? UnpolyResponse.builder().view("greet::main").view("layout::menu").build()
+				: UnpolyResponse.builder().view("greet").build();
 	}
 
 }
