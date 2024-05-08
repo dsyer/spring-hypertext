@@ -18,6 +18,7 @@
 	<modules>
 		<module>generic-sample</module>
 		<module>htmx-sample</module>
+		<module>unpoly-sample</module>
 	</modules>
 
 	<properties>
