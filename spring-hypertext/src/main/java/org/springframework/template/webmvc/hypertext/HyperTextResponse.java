@@ -24,9 +24,6 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
@@ -35,21 +32,18 @@ public class HyperTextResponse {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HyperTextResponse.class);
 
 	private final Set<ModelAndView> views = new HashSet<>();
-	private final MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-	private final Map<String, Map<String, Object>> details = new LinkedHashMap<>();
+	private final Map<String, HyperTextDetail> details = new LinkedHashMap<>();
 
 	protected HyperTextResponse() {
 	}
 
-	private HyperTextResponse(Set<ModelAndView> views, MultiValueMap<String, String> headers,
-			Map<String, Map<String, Object>> details) {
+	private HyperTextResponse(Set<ModelAndView> views, Map<String, HyperTextDetail> details) {
 		this.views.addAll(views);
-		this.headers.putAll(headers);
 		this.details.putAll(details);
 	}
 
 	public HyperTextResponse(Builder<?> builder) {
-		this(builder.views, builder.headers, builder.details);
+		this(builder.views, builder.details());
 	}
 
 	public static Builder<?> builder() {
@@ -60,18 +54,13 @@ public class HyperTextResponse {
 		return Collections.unmodifiableCollection(views);
 	}
 
-	public MultiValueMap<String, String> getHeaders() {
-		return new LinkedMultiValueMap<>(HttpHeaders.readOnlyHttpHeaders(headers));
-	}
-
-	public Map<String, Map<String, Object>> getDetails() {
+	public Map<String, HyperTextDetail> getDetails() {
 		return Collections.unmodifiableMap(details);
 	}
 
 	public static class Builder<T extends Builder<T>> {
 		private final Set<ModelAndView> views = new HashSet<>();
-		private final MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-		private final Map<String, Map<String, Object>> details = new LinkedHashMap<>();
+		private final Map<String, HyperTextDetail> details = new LinkedHashMap<>();
 
 		public HyperTextResponse build() {
 			return new HyperTextResponse(this);
@@ -82,6 +71,10 @@ public class HyperTextResponse {
 			return (T) this;
 		}
 
+		protected Map<String, HyperTextDetail> details() {
+			return Collections.unmodifiableMap(details);
+		}
+
 		public T and(HyperTextResponse other) {
 			other.views.forEach(template -> {
 				if (views.stream().anyMatch(mav -> template.equals(mav))) {
@@ -90,7 +83,6 @@ public class HyperTextResponse {
 					views.add(template);
 				}
 			});
-			headers.addAll(other.headers);
 			details.putAll(other.details);
 			return self();
 		}
@@ -114,23 +106,34 @@ public class HyperTextResponse {
 			return self();
 		}
 
-		public T add(String name, String value) {
-			headers.add(name, value);
-			return self();
-		}
-
 		public T set(String name, String value) {
-			headers.set(name, value);
+			details.put(name, HyperTextDetail.of(value));
 			return self();
 		}
 
 		public T clear(String name) {
-			headers.remove(name);
+			details.remove(name);
 			return self();
 		}
 
-		public T detail(String name, String key, Object value) {
-			details.computeIfAbsent(name, k -> new LinkedHashMap<>()).put(key, value);
+		public T set(String name, Object value) {
+			details.put(name, HyperTextDetail.of(value));
+			return self();
+		}
+
+		public T add(String name, String value) {
+			add(name, value, new LinkedHashMap<>());
+			return self();
+		}
+
+		public T add(String name, String key, Object value) {
+			HyperTextDetail existing = details.get(name);
+			if (existing == null) {
+				details.put(name, HyperTextDetail.from(Map.of(key, value)));
+			} else {
+				Map<String, Object> copy = existing.asMap();
+				copy.put(key, value);
+			}
 			return self();
 		}
 

@@ -66,7 +66,7 @@ public class HyperTextResponseHandlerMethodReturnValueHandler implements Handler
 		HyperTextResponse htmxResponse = (HyperTextResponse) returnValue;
 		mavContainer.setView(toView(htmxResponse));
 
-		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(htmxResponse.getHeaders());
+		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>();
 		addDetailHeaders(htmxResponse, headers);
 		addHeaders(headers, webRequest.getNativeResponse(HttpServletResponse.class));
 	}
@@ -96,16 +96,32 @@ public class HyperTextResponseHandlerMethodReturnValueHandler implements Handler
 	}
 
 	private void addDetailHeaders(HyperTextResponse htmxResponse, MultiValueMap<String, String> headers) {
-		for (String name : htmxResponse.getHeaders().keySet()) {
+		for (String name : htmxResponse.getDetails().keySet()) {
 			headers.add(name, jsonHeaders(htmxResponse.getDetails().get(name)));
 		}
 	}
 
-	private String jsonHeaders(Map<String, Object> map) {
+	private String jsonHeaders(HyperTextDetail value) {
+		if (value == null) {
+			return "";
+		}
+		if (value.isString()) {
+			return value.asString();
+		}
 		try {
-			return objectMapper.writeValueAsString(map);
+			if (value.isObject()) {
+				return objectMapper.writeValueAsString(value.asObject());
+			}
+			Map<String, Object> map = value.asMap();
+			if (map.values().stream().allMatch(v -> v instanceof Map sub && sub.isEmpty())) {
+				return map.keySet().stream().collect(Collectors.joining(","));
+			}
+			if (map.isEmpty()) {
+				return "";
+			}
+			return objectMapper.writeValueAsString(value.asMap());
 		} catch (JsonProcessingException e) {
-			throw new IllegalArgumentException("Unable to serialize " + map, e);
+			throw new IllegalArgumentException("Unable to serialize " + value.getClass(), e);
 		}
 	}
 

@@ -21,11 +21,10 @@ package org.springframework.template.webmvc.hypertext;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
 public class HyperTextResponseTests {
@@ -53,24 +52,24 @@ public class HyperTextResponseTests {
 	@Test
 	public void testBuilderAndHeader() {
 		HyperTextResponse response = HyperTextResponse.builder()
-				.add("Content-Type", "application/json")
+				.set("Content-Type", "application/json")
 				.build();
 
-		MultiValueMap<String, String> expectedHeaders = new LinkedMultiValueMap<>();
-		expectedHeaders.add("Content-Type", "application/json");
+		Map<String, HyperTextDetail> expectedHeaders = new LinkedHashMap<>();
+		expectedHeaders.put("Content-Type", HyperTextDetail.of("application/json"));
 
-		assertThat(response.getHeaders()).isEqualTo(expectedHeaders);
+		assertThat(response.getDetails()).isEqualTo(expectedHeaders);
 	}
 
 	@Test
 	public void testBuilderAndDetailHeader() {
 		HyperTextResponse response = HyperTextResponse.builder()
-				.detail("X-Custom-Header", "key", "value")
+				.add("X-Custom-Header", "key", "value")
 				.build();
 
-		Map<String, Map<String, Object>> expectedDetailHeaders = Collections.singletonMap(
+		Map<String, HyperTextDetail> expectedDetailHeaders = Collections.singletonMap(
 				"X-Custom-Header",
-				Collections.singletonMap("key", "value"));
+				HyperTextDetail.from(Collections.singletonMap("key", "value")));
 
 		assertThat(response.getDetails()).isEqualTo(expectedDetailHeaders);
 	}
@@ -79,15 +78,15 @@ public class HyperTextResponseTests {
 	public void testAnd() {
 		ModelAndView modelAndView = new ModelAndView("viewName");
 		HyperTextResponse other = HyperTextResponse.builder()
-				.add("Content-Type", "application/json")
+				.set("Content-Type", "application/json")
 				.view(modelAndView)
 				.build();
 		HyperTextResponse response = HyperTextResponse.builder().and(other)
 				.build();
 
-				MultiValueMap<String, String> expectedHeaders = new LinkedMultiValueMap<>();
-		expectedHeaders.add("Content-Type", "application/json");
-		assertThat(response.getHeaders()).isEqualTo(expectedHeaders);
+		Map<String, HyperTextDetail> expectedHeaders = new LinkedHashMap<>();
+		expectedHeaders.put("Content-Type", HyperTextDetail.of("application/json"));
+		assertThat(response.getDetails()).isEqualTo(expectedHeaders);
 
 		assertThat(response.getViews()).containsOnly(modelAndView);
 	}

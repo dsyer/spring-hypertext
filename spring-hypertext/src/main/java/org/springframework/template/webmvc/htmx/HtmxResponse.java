@@ -15,6 +15,7 @@
  */
 package org.springframework.template.webmvc.htmx;
 
+import org.springframework.template.webmvc.hypertext.HyperTextDetail;
 import org.springframework.template.webmvc.hypertext.HyperTextResponse;
 
 public class HtmxResponse extends HyperTextResponse {
@@ -32,23 +33,28 @@ public class HtmxResponse extends HyperTextResponse {
 	}
 
 	public String getRedirect() {
-		return getHeaders().getFirst(HtmxResponseHeader.HX_REDIRECT.getValue());
+		HyperTextDetail detail = getDetails().get(HtmxResponseHeader.HX_REDIRECT.getValue());
+		return detail == null ? null : detail.asString();
 	}
 
 	public String getPushUrl() {
-		return getHeaders().getFirst(HtmxResponseHeader.HX_PUSH_URL.getValue());
+		HyperTextDetail detail = getDetails().get(HtmxResponseHeader.HX_PUSH_URL.getValue());
+		return detail == null ? null : detail.asString();
 	}
 
 	public String getReplaceUrl() {
-		return getHeaders().getFirst(HtmxResponseHeader.HX_REPLACE_URL.getValue());
+		HyperTextDetail detail = getDetails().get(HtmxResponseHeader.HX_REPLACE_URL.getValue());
+		return detail == null ? null : detail.asString();
 	}
 
 	public String getReselect() {
-		return getHeaders().getFirst(HtmxResponseHeader.HX_RESELECT.getValue());
+		HyperTextDetail detail = getDetails().get(HtmxResponseHeader.HX_RESELECT.getValue());
+		return detail == null ? null : detail.asString();
 	}
 
 	public String getRetarget() {
-		return getHeaders().getFirst(HtmxResponseHeader.HX_RETARGET.getValue());
+		HyperTextDetail detail = getDetails().get(HtmxResponseHeader.HX_RETARGET.getValue());
+		return detail == null ? null : detail.asString();
 	}
 
 	public static class Builder extends HyperTextResponse.Builder<Builder> {
