@@ -77,7 +77,7 @@ public class HyperTextResponse {
 
 		public T and(HyperTextResponse other) {
 			other.views.forEach(template -> {
-				if (views.stream().anyMatch(mav -> template.equals(mav))) {
+				if (views.stream().anyMatch(mav -> same(mav, template))) {
 					LOGGER.warn("Duplicate template '{}' found while merging HyperTextResponse", template);
 				} else {
 					views.add(template);
@@ -137,6 +137,21 @@ public class HyperTextResponse {
 			return self();
 		}
 
+		private static boolean same(ModelAndView one, ModelAndView two) {
+			if (one == two) {
+				return true;
+			}
+			if (one == null || two == null) {
+				return false;
+			}
+			if (one.getViewName() != null && one.getViewName().equals(two.getViewName())) {
+				return true;
+			}
+			if (one.getView() != null && one.getView().equals(two.getView())) {
+				return true;
+			}
+			return false;
+		}
 	}
 
 }
