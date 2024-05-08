@@ -16,7 +16,8 @@
 	<name>Spring Template Samples Parent</name>
 
 	<modules>
-		<module>webmvc-sample</module>
+		<module>generic-sample</module>
+		<module>htmx-sample</module>
 	</modules>
 
 	<properties>
