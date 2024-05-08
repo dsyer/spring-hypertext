@@ -87,11 +87,24 @@ public class HyperTextResponse {
 			return self();
 		}
 
+		/**
+		 * Append a {@link ModelAndView} instance to use for rendering.
+		 *
+		 * @param modelAndView the model and view
+		 * @return the builder
+		 */
 		public T view(ModelAndView view) {
 			views.add(view);
 			return self();
 		}
 
+		/**
+		 * Append a {@link View} instance to use for rendering together with the
+		 * implicit model.
+		 *
+		 * @param view the view
+		 * @return the builder
+		 */
 		public T view(View view) {
 			if (!views.stream().anyMatch(mav -> view.equals(mav.getView()))) {
 				views.add(new ModelAndView(view));
@@ -99,6 +112,13 @@ public class HyperTextResponse {
 			return self();
 		}
 
+		/**
+		 * Append a view name to be resolved with {@code ViewResolver} implementations
+		 * and used together with the implicit model.
+		 *
+		 * @param viewName the name of the view.
+		 * @return the builder
+		 */
 		public T view(String viewName) {
 			if (!views.stream().anyMatch(mav -> viewName.equals(mav.getViewName()))) {
 				views.add(new ModelAndView(viewName));
