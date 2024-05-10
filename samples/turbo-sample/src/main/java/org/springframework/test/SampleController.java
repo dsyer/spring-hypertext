@@ -3,16 +3,13 @@ package org.springframework.test;
 import java.util.Date;
 import java.util.Map;
 
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.template.webmvc.hypertext.HyperTextMapping;
 import org.springframework.template.webmvc.hypertext.HyperTextRequest;
+import org.springframework.template.webmvc.turbo.TurboMapping;
+import org.springframework.template.webmvc.turbo.TurboResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.View;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class SampleController {
@@ -24,18 +21,11 @@ public class SampleController {
 	}
 
 	@GetMapping(path = "/")
-	String index(Map<String, Object> model) {
+	String index(Map<String, Object> model, HyperTextRequest hx) {
 		menu(model, "home");
 		model.put("message", "Welcome");
 		model.put("time", new Date());
-		return "index";
-	}
-
-	@HyperTextMapping(headers = "x-turbo-request-id")
-	@GetMapping(path = "/", produces = "text/vnd.turbo-stream.html")
-	String indexHyper(Map<String, Object> model) {
-		index(model);
-		return "index::stream,layout::stream";
+		return hx.isActive() ? "index::stream,layout::stream" : "index";
 	}
 
 	@GetMapping(path = "/greet")
@@ -46,11 +36,11 @@ public class SampleController {
 		return "greet";
 	}
 
-	@HyperTextMapping(headers = "x-turbo-request-id")
-	@GetMapping(path = "/greet", produces = "text/vnd.turbo-stream.html")
-	String greetHyper(Map<String, Object> model) {
+	@TurboMapping
+	@GetMapping(path = "/greet")
+	TurboResponse greetHyper(Map<String, Object> model) {
 		greet(model);
-		return "greet::stream,layout::stream";
+		return TurboResponse.builder().view("greet::stream").view("layout::stream").build();
 	}
 			
 	@GetMapping(path = "/menu")

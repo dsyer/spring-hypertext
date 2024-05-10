@@ -12,3 +12,6 @@ spring:
   threads:
     virtual:
       enabled: true
+  thymeleaf:
+    servlet:
+      content-type: 'text/*'

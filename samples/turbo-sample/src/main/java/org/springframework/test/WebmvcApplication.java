@@ -29,33 +29,4 @@ public class WebmvcApplication {
 		return new Application();
 	}
 
-	@Bean
-	@ConditionalOnMissingBean(name = "extraThymeleafViewResolver")
-	ThymeleafViewResolver extraThymeleafViewResolver(ThymeleafProperties properties,
-			SpringTemplateEngine templateEngine) {
-		ThymeleafViewResolver resolver = new ThymeleafViewResolver();
-		resolver.setTemplateEngine(templateEngine);
-		resolver.setCharacterEncoding(properties.getEncoding().name());
-		resolver.setContentType(
-				appendCharset(MimeTypeUtils.parseMimeType("text/vnd.turbo-stream.html"), resolver.getCharacterEncoding()));
-		resolver.setProducePartialOutputWhileProcessing(
-				properties.getServlet().isProducePartialOutputWhileProcessing());
-		resolver.setExcludedViewNames(properties.getExcludedViewNames());
-		resolver.setViewNames(properties.getViewNames());
-		// This resolver acts as a fallback resolver (e.g. like a
-		// InternalResourceViewResolver) so it needs to have low precedence
-		resolver.setOrder(Ordered.LOWEST_PRECEDENCE - 3);
-		resolver.setCache(properties.isCache());
-		return resolver;
-	}
-
-	private String appendCharset(MimeType type, String charset) {
-		if (type.getCharset() != null) {
-			return type.toString();
-		}
-		LinkedHashMap<String, String> parameters = new LinkedHashMap<>();
-		parameters.put("charset", charset);
-		parameters.putAll(type.getParameters());
-		return new MimeType(type, parameters).toString();
-	}
 }

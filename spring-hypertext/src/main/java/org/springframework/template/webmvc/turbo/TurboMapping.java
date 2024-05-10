@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.template.webmvc.unpoly;
+package org.springframework.template.webmvc.turbo;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -24,6 +24,6 @@ import org.springframework.template.webmvc.hypertext.HyperTextMapping;
 
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@HyperTextMapping(headers = "X-Up-Context")
-public @interface UnpolyMapping {
+@HyperTextMapping(headers = "X-Turbo-Request-Id")
+public @interface TurboMapping {
 }

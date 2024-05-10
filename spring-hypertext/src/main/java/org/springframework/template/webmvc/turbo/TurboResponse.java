@@ -13,17 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.template.webmvc.unpoly;
+package org.springframework.template.webmvc.turbo;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.springframework.template.webmvc.hypertext.HyperTextResponse;
 
-import org.springframework.template.webmvc.hypertext.HyperTextMapping;
+public class TurboResponse extends HyperTextResponse {
 
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-@HyperTextMapping(headers = "X-Up-Context")
-public @interface UnpolyMapping {
+	private TurboResponse(Builder builder) {
+		super(builder);
+	}
+
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder extends HyperTextResponse.Builder<Builder> {
+
+		public TurboResponse build() {
+			return new TurboResponse(this);
+		}
+
+		protected Builder self() {
+			return this;
+		}
+
+	}
+
 }
