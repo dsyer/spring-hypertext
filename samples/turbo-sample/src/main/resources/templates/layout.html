@@ -60,10 +60,19 @@
     </header>
     <th:block th:insert="${template}" />
     <footer>
-        <p class="col-12" th:fragment="logo">
-            <img src="../static/images/spring-logo.svg" th:src="@{/images/spring-logo.svg}" alt="Logo"
-                style="width:200px;" loading="lazy" />
-        </p>
+        <turbo-frame id="logo" src="/logo">
+            <p class="col-12" up-source="/logo" up-poll up-interval="0">
+                <span class="fa fa-spin fa-spinner" style="width:200px; text-align:center;"></span>
+            </p>
+        </turbo-frame>
+        <div th:remove="all">
+            <turbo-frame id="logo" th:fragment="logo">
+                <p class="col-12">
+                    <img src="../static/images/spring-logo.svg" th:src="@{/images/spring-logo.svg}" alt="Logo"
+                        style="width:200px;" loading="lazy" />
+                </p>
+            </turbo-frame>
+        </div>
     </footer>
 
 </body>
