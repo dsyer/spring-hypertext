@@ -1,0 +1,71 @@
+<!doctype html>
+<html th:fragment="layout (template, menu)">
+
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Demo :: a Spring Framework demonstration</title>
+
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/missing.css/1.1.1/dist/missing.min.css}" />
+    <link th:href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}" rel="stylesheet">
+    <script type="module" th:src="@{/webjars/missing.css/1.1.1/dist/js/overflow-nav.js}"></script>
+    <script th:src="@{/webjars/hotwired__turbo/8.0.2/dist/turbo.es2017-umd.js}"></script>
+
+    <style>
+        :root {
+            --accent: var(--lime-9);
+            --muted-accent: var(--lime-6);
+            --interactive-bg: var(--lime-3);
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <header class="navbar" data-overflow-nav>
+        <nav role="toolbar">
+            <div>
+                <button aria-hidden="true" type="button" data-nav-expander class="iconbutton"
+                    aria-pressed="false"></button>
+            </div>
+            <turbo-frame th:fragment="menu" id="menus">
+                <ul role="list">
+                    <li th:each="menu : ${app.menus}">
+                        <a th:title="${menu.title}" th:aria-current="${menu.active? 'page' : ''}" th:href="${menu.path}"
+                            data-turbo-stream>
+                            <span th:class="'fa fa-'+${menu.glyph}"></span>
+                            <span th:text="${menu.name}">Template</span>
+                        </a>
+                    </li>
+                </ul>
+            </turbo-frame>
+            <th:block th:remove="all">
+                <turbo-stream th:fragment="stream" action="replace" target="menus">
+                    <template>
+                        <th:block th:replace="~{layout :: menu}"></th:block>
+                    </template>
+                </turbo-stream>
+            </th:block>
+        </nav>
+    </header>
+    <th:block th:insert="${template}" />
+    <footer>
+        <p class="col-12" th:fragment="logo">
+            <img src="../static/images/spring-logo.svg" th:src="@{/images/spring-logo.svg}" alt="Logo"
+                style="width:200px;" loading="lazy" />
+        </p>
+    </footer>
+
+</body>
+
+</html>

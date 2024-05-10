@@ -56,7 +56,7 @@ public class MultiViewResolver implements ViewResolver, Ordered {
 			for (String template : names) {
 				View value = resolver.resolveViewName(template, locale);
 				if (value == null) {
-					return null;
+					continue;
 				}
 				templates.add(value);
 			}
