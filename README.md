@@ -1,32 +1,29 @@
-A template abstraction for Spring for rendering text templates in a variety of formats, borrowing heavily from [Spring Restdocs](https://github.com/spring-projects/spring-restdocs) where similar concepts are found for generating snippets of documentation in tests.
+An abstraction for hypermedia libraries (like [HTMX](https://htmx.org/), [Unpoly](https://unpoly.com) and [Hotwired Turbo](https://turbo.hotwired.dev)) with Spring MVC. Features:
 
-Two central interfaces are the template, which can render with a provided context:
+* A `@RequestMapping` can be annotated with `@HyperTextMapping` to select it for rendering special content. Typically this will be part of a page, not a whole HTML page.
+* `HyperTextResponse` as a return value from a `@RequestMapping` method. This is a collection of view renderings, typically HTML fragments. It can also be used to set additional headers on the response.
+* `HyperTextRequest` as a method argument for a `@RequestMapping` method. It detects a hypermedia request from one of the libraries and allows the controller to react to it.
+* `MultiViewResolver` is a `ViewResolver` that splits its view name parameter by commas and resolves each part separately. This allows a controller to return multiple views in a single response without using `HyperTextResponse` (but all the views get the same model when they render).
+
+HTMX, Unpoly and Turbo each get their own specific version of the `@HyperTextMapping` annotation and the `HyperTextResponse`. This allows the controller to react differently to requests from different libraries.
+
+Example with HTMX:
 
 ```java
-public interface Template {
-	String render(Map<String, Object> context);
+@HtmxMapping
+@PostMapping(path = "/greet")
+HtmxResponse name(Map<String, Object> model, @RequestParam String name) {
+	...
+	return HtmxResponse.builder().view("greet::main").view("layout::menu").build();
 }
 ```
 
-and a template resolver that maps String paths to templates:
+or taking advantage of the `MultiViewResolver` and `HyperTextRequest`:
 
 ```java
-public interface TemplateResolver {
-
-	Template resolve(String path, MimeType type, Locale locale);
-
-	default Template resolve(String path) {
-		return resolve(path, MimeTypeUtils.ALL, Locale.getDefault());
-	}
-
+@PostMapping(path = "/greet")
+String name(Map<String, Object> model, @RequestParam String name, HyperTextRequest hx) {
+	...
+	return hx.isActive() ? "greet::main,layout::menu" : "greet";
 }
 ```
-
-Implementations are provided for a variety of template formats, including:
-
-* [FreeMarker](https://freemarker.apache.org/)
-* [Mustache](https://github.com/samskivert/jmustache) (via JMustache)
-* [Thymeleaf](https://thymeleaf.org/)
-* Antlr [String Templates](https://github.com/antlr/stringtemplate4)
-* A simple dependency-free option with `${placeholder}` syntax
-* [JStachio](https://github.com/jstachio/jstachio) (reflection-free Mustache templates)
