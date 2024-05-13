@@ -30,8 +30,38 @@ public class UnpolyResponse extends HyperTextResponse {
 		return new Builder();
 	}
 
+	public String getAcceptLayer() {
+		HyperTextDetail detail = getDetails().get(UnpolyResponseHeader.UP_ACCEPT_LAYER.getValue());
+		return detail == null ? null : detail.asString();
+	}
+
+	public String getDismissLayer() {
+		HyperTextDetail detail = getDetails().get(UnpolyResponseHeader.UP_DISMISS_LAYER.getValue());
+		return detail == null ? null : detail.asString();
+	}
+
+	public String getEvictCache() {
+		HyperTextDetail detail = getDetails().get(UnpolyResponseHeader.UP_EVICT_CACHE.getValue());
+		return detail == null ? null : detail.asString();
+	}
+
+	public String getExpireCache() {
+		HyperTextDetail detail = getDetails().get(UnpolyResponseHeader.UP_EXPIRE_CACHE.getValue());
+		return detail == null ? null : detail.asString();
+	}
+
 	public String getLocation() {
 		HyperTextDetail detail = getDetails().get(UnpolyResponseHeader.UP_LOCATION.getValue());
+		return detail == null ? null : detail.asString();
+	}
+
+	public String getMethod() {
+		HyperTextDetail detail = getDetails().get(UnpolyResponseHeader.UP_METHOD.getValue());
+		return detail == null ? null : detail.asString();
+	}
+
+	public String getTitle() {
+		HyperTextDetail detail = getDetails().get(UnpolyResponseHeader.UP_TITLE.getValue());
 		return detail == null ? null : detail.asString();
 	}
 
@@ -50,15 +80,39 @@ public class UnpolyResponse extends HyperTextResponse {
 			return this;
 		}
 
+		public Builder evict(String pattern) {
+			return set(UnpolyResponseHeader.UP_EVICT_CACHE.getValue(), pattern);
+		}
+
+		public Builder expire(String pattern) {
+			return set(UnpolyResponseHeader.UP_EXPIRE_CACHE.getValue(), pattern);
+		}
+
 		public Builder location(String path) {
 			return set(UnpolyResponseHeader.UP_LOCATION.getValue(), path);
+		}
+
+		public Builder method(String method) {
+			return set(UnpolyResponseHeader.UP_METHOD.getValue(), method);
+		}
+
+		public Builder title(String title) {
+			return set(UnpolyResponseHeader.UP_TITLE.getValue(), title);
+		}
+
+		public Builder acceptLayer(String layer) {
+			return set(UnpolyResponseHeader.UP_ACCEPT_LAYER.getValue(), layer);
+		}
+
+		public Builder dismissLayer(String layer) {
+			return set(UnpolyResponseHeader.UP_DISMISS_LAYER.getValue(), layer);
 		}
 
 		public Builder event(String event) {
 			return add(UnpolyResponseHeader.UP_EVENTS.getValue(), event);
 		}
 
-		public Builder trigger(String event, Object detail) {
+		public Builder event(String event, Object detail) {
 			return add(UnpolyResponseHeader.UP_EVENTS.getValue(), event, detail);
 		}
 

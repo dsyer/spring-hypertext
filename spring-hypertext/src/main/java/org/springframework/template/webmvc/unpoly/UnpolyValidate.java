@@ -15,24 +15,15 @@
  */
 package org.springframework.template.webmvc.unpoly;
 
-public enum UnpolyResponseHeader {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    UP_ACCEPT_LAYER("X-Up-Accept-Layer"),
-    UP_DISMISS_LAYER("X-Up-Dismiss-Layer"),
-    UP_EVENTS("X-Up-Events"),
-    UP_EVICT_CACHE("X-Up-Evict-Cache"),
-    UP_EXPIRE_CACHE("X-Up-Expire-Cache"),
-    UP_LOCATION("X-Up-Location"),
-    UP_METHOD("X-Up-Method"),
-    UP_TITLE("X-Up-Title");
+import org.springframework.template.webmvc.hypertext.HyperTextMapping;
 
-    private final String value;
-
-    UnpolyResponseHeader(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@HyperTextMapping(headers = "X-Up-Validate")
+public @interface UnpolyValidate {
 }

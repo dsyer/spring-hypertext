@@ -15,24 +15,32 @@
  */
 package org.springframework.template.webmvc.unpoly;
 
-public enum UnpolyResponseHeader {
+import java.util.Set;
 
-    UP_ACCEPT_LAYER("X-Up-Accept-Layer"),
-    UP_DISMISS_LAYER("X-Up-Dismiss-Layer"),
-    UP_EVENTS("X-Up-Events"),
-    UP_EVICT_CACHE("X-Up-Evict-Cache"),
-    UP_EXPIRE_CACHE("X-Up-Expire-Cache"),
-    UP_LOCATION("X-Up-Location"),
-    UP_METHOD("X-Up-Method"),
-    UP_TITLE("X-Up-Title");
+public enum UnpolyRequestHeader {
 
-    private final String value;
+	UP_FAIL_MODE("X-Up-Fail-Mode"),
+	UP_FAIL_TARGET("X-Up-Fail-Target"),
+	UP_MODE("X-Up-Mode"),
+	UP_TARGET("X-Up-Target"),
+	UP_VALIDATE("X-Up-Validate");
 
-    UnpolyResponseHeader(String value) {
-        this.value = value;
-    }
+	private final String value;
 
-    public String getValue() {
-        return value;
-    }
+	UnpolyRequestHeader(String value) {
+		this.value = value;
+	}
+
+	public static boolean isUnpoly(Set<String> names) {
+		for (UnpolyRequestHeader header : values()) {
+			if (names.contains(header.getValue())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public String getValue() {
+		return value;
+	}
 }
