@@ -30,7 +30,7 @@ public class HyperTextRequestHandlerMethodArgumentResolver implements HandlerMet
 	private final String[] headerNames;
 
 	public HyperTextRequestHandlerMethodArgumentResolver() {
-		this("Hx-Request", "X-Up-Context", "X-Turbo-Request-Id");
+		this("Hx-Request", "X-Up-Version", "X-Turbo-Request-Id");
 	}
 
 	public HyperTextRequestHandlerMethodArgumentResolver(String ...headerNames) {

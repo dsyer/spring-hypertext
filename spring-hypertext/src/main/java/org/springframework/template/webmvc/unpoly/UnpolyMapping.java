@@ -24,6 +24,6 @@ import org.springframework.template.webmvc.hypertext.HyperTextMapping;
 
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@HyperTextMapping(headers = "X-Up-Context")
+@HyperTextMapping(headers = "X-Up-Version")
 public @interface UnpolyMapping {
 }
