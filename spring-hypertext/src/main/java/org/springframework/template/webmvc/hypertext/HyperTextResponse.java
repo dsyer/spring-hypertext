@@ -17,8 +17,8 @@ package org.springframework.template.webmvc.hypertext;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,7 +31,7 @@ public class HyperTextResponse {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HyperTextResponse.class);
 
-	private final Set<ModelAndView> views = new HashSet<>();
+	private final Set<ModelAndView> views = new LinkedHashSet<>();
 	private final Map<String, HyperTextDetail> details = new LinkedHashMap<>();
 
 	protected HyperTextResponse() {
@@ -59,7 +59,7 @@ public class HyperTextResponse {
 	}
 
 	public static class Builder<T extends Builder<T>> {
-		private final Set<ModelAndView> views = new HashSet<>();
+		private final Set<ModelAndView> views = new LinkedHashSet<>();
 		private final Map<String, HyperTextDetail> details = new LinkedHashMap<>();
 
 		public HyperTextResponse build() {

@@ -13,35 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.template.webmvc.unpoly;
+package org.springframework.template.webmvc.htmx;
 
+import java.util.Collections;
 import java.util.Set;
 
-public enum UnpolyRequestHeader {
+import org.springframework.template.webmvc.hypertext.HeaderNameExtractor;
 
-	UP_FAIL_MODE("X-Up-Fail-Mode"),
-	UP_FAIL_TARGET("X-Up-Fail-Target"),
-	UP_MODE("X-Up-Mode"),
-	UP_TARGET("X-Up-Target"),
-	UP_VERSION("X-Up-Version"),
-	UP_VALIDATE("X-Up-Validate");
+import jakarta.servlet.http.HttpServletRequest;
 
-	private final String value;
+public class HtmxVaryHeaderExtractor implements HeaderNameExtractor {
 
-	UnpolyRequestHeader(String value) {
-		this.value = value;
-	}
-
-	public static boolean isUnpoly(Set<String> names) {
-		for (UnpolyRequestHeader header : values()) {
-			if (names.contains(header.getValue())) {
-				return true;
-			}
+	@Override
+	public Set<String> getHeaders(HttpServletRequest request) {
+		if (request.getHeader(HtmxRequestHeader.HX_REQUEST.getValue()) != null) {
+			return Set.of(HtmxRequestHeader.HX_REQUEST.getValue());
 		}
-		return false;
+		return Collections.emptySet();
 	}
-
-	public String getValue() {
-		return value;
-	}
+	
 }

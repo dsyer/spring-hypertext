@@ -15,33 +15,24 @@
  */
 package org.springframework.template.webmvc.unpoly;
 
+import java.util.HashSet;
 import java.util.Set;
 
-public enum UnpolyRequestHeader {
+import org.springframework.template.webmvc.hypertext.HeaderNameExtractor;
 
-	UP_FAIL_MODE("X-Up-Fail-Mode"),
-	UP_FAIL_TARGET("X-Up-Fail-Target"),
-	UP_MODE("X-Up-Mode"),
-	UP_TARGET("X-Up-Target"),
-	UP_VERSION("X-Up-Version"),
-	UP_VALIDATE("X-Up-Validate");
+import jakarta.servlet.http.HttpServletRequest;
 
-	private final String value;
+public class UnpolyVaryHeaderExtractor implements HeaderNameExtractor {
 
-	UnpolyRequestHeader(String value) {
-		this.value = value;
-	}
-
-	public static boolean isUnpoly(Set<String> names) {
-		for (UnpolyRequestHeader header : values()) {
-			if (names.contains(header.getValue())) {
-				return true;
+	@Override
+	public Set<String> getHeaders(HttpServletRequest request) {
+		Set<String> result = new HashSet<>();
+		for (UnpolyRequestHeader header : UnpolyRequestHeader.values()) {
+			if (request.getHeader(header.getValue()) != null) {
+				result.add(header.getValue());
 			}
 		}
-		return false;
+		return result;
 	}
-
-	public String getValue() {
-		return value;
-	}
+	
 }

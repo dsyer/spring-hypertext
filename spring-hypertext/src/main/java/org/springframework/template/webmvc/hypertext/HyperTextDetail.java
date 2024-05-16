@@ -35,6 +35,14 @@ public class HyperTextDetail {
 	}
 
 	public static HyperTextDetail of(Object object) {
+		if (object instanceof String) {
+			return new HyperTextDetail(null, null, (String) object);
+		}
+		if (object instanceof Map) {
+			@SuppressWarnings("unchecked")
+			Map<String, Object> map = (Map<String, Object>) object;
+			return new HyperTextDetail(map, null, null);
+		}
 		return new HyperTextDetail(null, object, null);
 	}
 

@@ -13,35 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.template.webmvc.unpoly;
+package org.springframework.template.webmvc.hypertext;
 
 import java.util.Set;
 
-public enum UnpolyRequestHeader {
+import jakarta.servlet.http.HttpServletRequest;
 
-	UP_FAIL_MODE("X-Up-Fail-Mode"),
-	UP_FAIL_TARGET("X-Up-Fail-Target"),
-	UP_MODE("X-Up-Mode"),
-	UP_TARGET("X-Up-Target"),
-	UP_VERSION("X-Up-Version"),
-	UP_VALIDATE("X-Up-Validate");
+public interface HeaderNameExtractor {
 
-	private final String value;
+	Set<String> getHeaders(HttpServletRequest request);
 
-	UnpolyRequestHeader(String value) {
-		this.value = value;
-	}
-
-	public static boolean isUnpoly(Set<String> names) {
-		for (UnpolyRequestHeader header : values()) {
-			if (names.contains(header.getValue())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public String getValue() {
-		return value;
-	}
 }

@@ -26,4 +26,5 @@ import org.springframework.template.webmvc.hypertext.HyperTextMapping;
 @Retention(RetentionPolicy.RUNTIME)
 @HyperTextMapping(headers = "HX-Request=true")
 public @interface HtmxMapping {
+	// TODO: support for trigger and target matching
 }

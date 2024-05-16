@@ -26,4 +26,5 @@ import org.springframework.template.webmvc.hypertext.HyperTextMapping;
 @Retention(RetentionPolicy.RUNTIME)
 @HyperTextMapping(headers = "X-Up-Version")
 public @interface UnpolyMapping {
+	// TODO: support for events and other headers
 }

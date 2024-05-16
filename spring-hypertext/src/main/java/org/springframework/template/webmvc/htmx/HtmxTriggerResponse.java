@@ -13,35 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.template.webmvc.unpoly;
+package org.springframework.template.webmvc.htmx;
 
-import java.util.Set;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public enum UnpolyRequestHeader {
-
-	UP_FAIL_MODE("X-Up-Fail-Mode"),
-	UP_FAIL_TARGET("X-Up-Fail-Target"),
-	UP_MODE("X-Up-Mode"),
-	UP_TARGET("X-Up-Target"),
-	UP_VERSION("X-Up-Version"),
-	UP_VALIDATE("X-Up-Validate");
-
-	private final String value;
-
-	UnpolyRequestHeader(String value) {
-		this.value = value;
-	}
-
-	public static boolean isUnpoly(Set<String> names) {
-		for (UnpolyRequestHeader header : values()) {
-			if (names.contains(header.getValue())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public String getValue() {
-		return value;
-	}
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface HtmxTriggerResponse {
+	String value();
+	HtmxTriggerLifecycle lifecycle() default HtmxTriggerLifecycle.RECEIVE;
 }

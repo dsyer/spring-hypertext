@@ -42,14 +42,14 @@ import jakarta.servlet.http.HttpServletResponse;
 public class HyperTextResponseHandlerMethodReturnValueHandler implements HandlerMethodReturnValueHandler {
 	private final ViewResolver views;
 	private final ObjectFactory<LocaleResolver> locales;
-	private final ObjectMapper objectMapper;
+	private final HyperTextDetailHeaderManager headerManager;
 
 	public HyperTextResponseHandlerMethodReturnValueHandler(ViewResolver views,
 			ObjectFactory<LocaleResolver> locales,
 			ObjectMapper objectMapper) {
 		this.views = views;
 		this.locales = locales;
-		this.objectMapper = objectMapper;
+		this.headerManager = new HyperTextDetailHeaderManager(objectMapper);
 	}
 
 	@Override
@@ -66,9 +66,8 @@ public class HyperTextResponseHandlerMethodReturnValueHandler implements Handler
 		HyperTextResponse htmxResponse = (HyperTextResponse) returnValue;
 		mavContainer.setView(toView(htmxResponse));
 
-		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>();
-		addDetailHeaders(htmxResponse, headers);
-		addHeaders(headers, webRequest.getNativeResponse(HttpServletResponse.class));
+		this.headerManager.addHeaders(webRequest.getNativeResponse(HttpServletResponse.class),
+				htmxResponse.getDetails());
 	}
 
 	private View toView(HyperTextResponse htmxResponse) {
@@ -93,54 +92,6 @@ public class HyperTextResponseHandlerMethodReturnValueHandler implements Handler
 			}
 			wrapper.copyBodyToResponse();
 		};
-	}
-
-	private void addDetailHeaders(HyperTextResponse htmxResponse, MultiValueMap<String, String> headers) {
-		for (String name : htmxResponse.getDetails().keySet()) {
-			headers.add(name, jsonHeaders(htmxResponse.getDetails().get(name)));
-		}
-	}
-
-	private String jsonHeaders(HyperTextDetail value) {
-		if (value == null) {
-			return "";
-		}
-		if (value.isString()) {
-			return value.asString();
-		}
-		try {
-			if (value.isObject()) {
-				return objectMapper.writeValueAsString(value.asObject());
-			}
-			Map<String, Object> map = value.asMap();
-			if (map.values().stream().allMatch(v -> v instanceof Map sub && sub.isEmpty())) {
-				return map.keySet().stream().collect(Collectors.joining(","));
-			}
-			if (map.isEmpty()) {
-				return "";
-			}
-			return objectMapper.writeValueAsString(value.asMap());
-		} catch (JsonProcessingException e) {
-			throw new IllegalArgumentException("Unable to serialize " + value.getClass(), e);
-		}
-	}
-
-	private void addHeaders(MultiValueMap<String, String> headers, HttpServletResponse response) {
-		for (String name : headers.keySet()) {
-			addHeader(response, name, headers.get(name));
-		}
-	}
-
-	private void addHeader(HttpServletResponse response, String headerName, List<String> values) {
-		if (values.isEmpty()) {
-			return;
-		}
-
-		String value = values.stream()
-				.collect(Collectors.joining(","));
-
-		response.setHeader(headerName, value);
-		return;
 	}
 
 }
