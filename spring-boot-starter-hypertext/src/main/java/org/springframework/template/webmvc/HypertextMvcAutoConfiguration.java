@@ -10,8 +10,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.context.annotation.Bean;
-import org.springframework.template.webmvc.hypertext.HyperTextRequestMappingHandlerMapping;
-import org.springframework.template.webmvc.hypertext.HyperTextWebMvcConfiguration;
+import org.springframework.hypertext.webmvc.HyperTextRequestMappingHandlerMapping;
+import org.springframework.hypertext.webmvc.HyperTextWebMvcConfiguration;
+import org.springframework.hypertext.webmvc.MultiViewResolver;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;

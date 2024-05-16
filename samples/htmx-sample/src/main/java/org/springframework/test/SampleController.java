@@ -3,10 +3,10 @@ package org.springframework.test;
 import java.util.Date;
 import java.util.Map;
 
+import org.springframework.hypertext.webmvc.HyperTextRequest;
+import org.springframework.hypertext.webmvc.htmx.HtmxMapping;
+import org.springframework.hypertext.webmvc.htmx.HtmxResponse;
 import org.springframework.stereotype.Controller;
-import org.springframework.template.webmvc.htmx.HtmxMapping;
-import org.springframework.template.webmvc.htmx.HtmxResponse;
-import org.springframework.template.webmvc.hypertext.HyperTextRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
