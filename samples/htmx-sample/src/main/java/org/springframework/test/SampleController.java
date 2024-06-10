@@ -5,7 +5,9 @@ import java.util.Map;
 
 import org.springframework.hypertext.webmvc.HyperTextRequest;
 import org.springframework.hypertext.webmvc.htmx.HtmxMapping;
+import org.springframework.hypertext.webmvc.htmx.HtmxRefreshResponse;
 import org.springframework.hypertext.webmvc.htmx.HtmxResponse;
+import org.springframework.hypertext.webmvc.htmx.HtmxTriggerResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,6 +47,7 @@ public class SampleController {
 	}
 
 	@GetMapping(path = "/menu")
+	@HtmxRefreshResponse
 	String menu(Map<String, Object> model, @RequestParam(defaultValue = "home") String active) {
 		application.activate(active);
 		model.put("app", application);
@@ -52,6 +55,7 @@ public class SampleController {
 	}
 
 	@GetMapping(path = "/logo")
+	@HtmxTriggerResponse("logo")
 	String logo() {
 		return "layout :: logo";
 	}
