@@ -16,20 +16,44 @@
 package org.springframework.hypertext.webmvc;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Repeatable;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationAttributes;
+import org.springframework.core.annotation.AnnotationUtils;
 
 public class AnnotationHyperTextDetailExtractorHelper {
 
-	public HyperTextDetail getDetails(Method method, Class<? extends Annotation> annotationType, String attrName) {
+	public HyperTextDetail[] getDetails(Method method, Class<? extends Annotation> annotationType, String attrName) {
+		if (annotationType.isAnnotationPresent(Repeatable.class)) {
+			Set<? extends Annotation> annotations = AnnotatedElementUtils.getMergedRepeatableAnnotations(method, annotationType);
+			if (annotations==null || annotations.isEmpty()) {
+				return new HyperTextDetail[0];
+			}
+			HyperTextDetail[] details = new HyperTextDetail[annotations.size()];
+			Iterator<? extends Annotation> iterator = annotations.iterator();
+			for (int i=0; i<annotations.size(); i++) {
+				AnnotationAttributes attrs = AnnotationUtils.getAnnotationAttributes(iterator.next(), true, true);
+				if (attrs == null) {
+					continue;
+				}
+				details[i] = detail(attrs, attrName);
+			}
+			return details;
+		}
 		AnnotationAttributes attrs = AnnotatedElementUtils.getMergedAnnotationAttributes(method, annotationType);
 		if (attrs == null || !attrs.containsKey(attrName)) {
-			return null;
+			return new HyperTextDetail[0];
 		}
+		return new HyperTextDetail[] {detail(attrs, attrName)};
+	}
+
+	private HyperTextDetail detail(AnnotationAttributes attrs, String attrName) {
 		String[] values = attrs.getStringArray(attrName);
 		HyperTextDetail detail = HyperTextDetail.of(new LinkedHashMap<>());
 		for (String key : values) {

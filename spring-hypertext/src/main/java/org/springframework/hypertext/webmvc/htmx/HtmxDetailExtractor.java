@@ -32,8 +32,8 @@ public class HtmxDetailExtractor implements HyperTextDetailExtractor {
 	@Override
 	public Map<String, HyperTextDetail> getDetails(Method method) {
 		Map<String, HyperTextDetail> details = new LinkedHashMap<>();
-		HyperTextDetail detail = helper.getDetails(method, HtmxTriggerResponse.class, "value");
-		if (detail != null) {
+		HyperTextDetail[] multi = helper.getDetails(method, HtmxTriggerResponse.class, "value");
+		for (HyperTextDetail detail : multi) {
 			AnnotationAttributes attrs = AnnotatedElementUtils.getMergedAnnotationAttributes(method,
 					HtmxTriggerResponse.class);
 			if (attrs != null) {

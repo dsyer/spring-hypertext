@@ -25,5 +25,4 @@ import java.lang.annotation.Target;
 public @interface HyperTextMapping {
 
 	String[] headers() default {};
-
 }

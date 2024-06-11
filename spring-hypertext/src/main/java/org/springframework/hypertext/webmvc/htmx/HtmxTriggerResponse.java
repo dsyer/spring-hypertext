@@ -16,13 +16,22 @@
 package org.springframework.hypertext.webmvc.htmx;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.springframework.hypertext.webmvc.htmx.HtmxTriggerResponse.HtmxTriggerResponses;
+
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
+@Repeatable(HtmxTriggerResponses.class)
 public @interface HtmxTriggerResponse {
 	String value();
 	HtmxTriggerLifecycle lifecycle() default HtmxTriggerLifecycle.RECEIVE;
+	@Target({ElementType.TYPE, ElementType.METHOD})
+	@Retention(RetentionPolicy.RUNTIME)
+		static @interface HtmxTriggerResponses {
+		HtmxTriggerResponse[] value();
+	}
 }
