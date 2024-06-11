@@ -44,6 +44,11 @@ public class HtmxDetailExtractor implements HyperTextDetailExtractor {
 		if (method.isAnnotationPresent(HtmxRefreshResponse.class)) {
 			details.put(HtmxResponseHeader.HX_REFRESH.getValue(), HyperTextDetail.of("true"));
 		}
+		if (method.isAnnotationPresent(HtmxPushUrlResponse.class)) {
+			AnnotationAttributes attrs = AnnotatedElementUtils.getMergedAnnotationAttributes(method,
+					HtmxPushUrlResponse.class);
+			details.put(HtmxResponseHeader.HX_PUSH_URL.getValue(), HyperTextDetail.of(attrs.getString("value")));
+		}
 		return details;
 	}
 }
