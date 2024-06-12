@@ -55,7 +55,7 @@ public class TestController {
         return "";
     }
 
-    @GetMapping("/with-trigger-settle")
+    @GetMapping("/with-trigger-after-settle")
     @HtmxTriggerResponse(value = "eventTriggered", lifecycle = HtmxTriggerLifecycle.SETTLE)
     @ResponseBody
     public String methodWithHxTriggerAndLifecycleSettle() {

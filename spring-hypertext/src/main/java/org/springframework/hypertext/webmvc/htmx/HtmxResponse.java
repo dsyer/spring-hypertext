@@ -221,8 +221,9 @@ public class HtmxResponse extends HyperTextResponse {
 			clear(HtmxResponseHeader.HX_LOCATION.getValue());
 			if (location.hasContextData()) {
 				set(HtmxResponseHeader.HX_LOCATION.getValue(), location);
+			} else {
+				set(HtmxResponseHeader.HX_LOCATION.getValue(), location.getPath());
 			}
-			set(HtmxResponseHeader.HX_LOCATION.getValue(), location.getPath());
 			this.location = location;
 			return this;
 		}

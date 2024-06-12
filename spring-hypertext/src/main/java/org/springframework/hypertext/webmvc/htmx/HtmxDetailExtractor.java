@@ -19,31 +19,35 @@ import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationAttributes;
-import org.springframework.hypertext.webmvc.AnnotationHyperTextDetailExtractorHelper;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.hypertext.webmvc.HyperTextDetail;
 import org.springframework.hypertext.webmvc.HyperTextDetailExtractor;
 
 public class HtmxDetailExtractor implements HyperTextDetailExtractor {
 
-	private AnnotationHyperTextDetailExtractorHelper helper = new AnnotationHyperTextDetailExtractorHelper();
-
 	@Override
 	public Map<String, HyperTextDetail> getDetails(Method method) {
 		Map<String, HyperTextDetail> details = new LinkedHashMap<>();
-		HyperTextDetail[] multi = helper.getDetails(method, HtmxTriggerResponse.class, "value");
-		for (HyperTextDetail detail : multi) {
-			AnnotationAttributes attrs = AnnotatedElementUtils.getMergedAnnotationAttributes(method,
-					HtmxTriggerResponse.class);
-			if (attrs != null) {
-				HtmxTriggerLifecycle value = attrs.getEnum("lifecycle");
-				details.put(value.getHeaderName(), detail);
-			}
+		Set<HtmxTriggerResponse> multi = AnnotatedElementUtils.getMergedRepeatableAnnotations(method, HtmxTriggerResponse.class);
+		for (HtmxTriggerResponse detail : multi) {
+				HtmxTriggerLifecycle value = detail.lifecycle();
+				AnnotationAttributes attrs = AnnotationUtils.getAnnotationAttributes(detail, true, true);
+				if (attrs == null) {
+					continue;
+				}
+				details.put(value.getHeaderName(), detail(attrs, "value"));
 		}
 		if (method.isAnnotationPresent(HtmxRefreshResponse.class)) {
 			details.put(HtmxResponseHeader.HX_REFRESH.getValue(), HyperTextDetail.of("true"));
+		}
+		if (method.isAnnotationPresent(HtmxReselectResponse.class)) {
+			AnnotationAttributes attrs = AnnotatedElementUtils.getMergedAnnotationAttributes(method,
+					HtmxReselectResponse.class);
+			details.put(HtmxResponseHeader.HX_RESELECT.getValue(), HyperTextDetail.of(attrs.getString("value")));
 		}
 		if (method.isAnnotationPresent(HtmxPushUrlResponse.class)) {
 			AnnotationAttributes attrs = AnnotatedElementUtils.getMergedAnnotationAttributes(method,
@@ -65,11 +69,6 @@ public class HtmxDetailExtractor implements HyperTextDetailExtractor {
 					HtmxRetargetResponse.class);
 			details.put(HtmxResponseHeader.HX_RETARGET.getValue(), HyperTextDetail.of(attrs.getString("value")));
 		}
-		if (method.isAnnotationPresent(HtmxRetargetResponse.class)) {
-			AnnotationAttributes attrs = AnnotatedElementUtils.getMergedAnnotationAttributes(method,
-					HtmxRetargetResponse.class);
-			details.put(HtmxResponseHeader.HX_RETARGET.getValue(), HyperTextDetail.of(attrs.getString("value")));
-		}
 		if (method.isAnnotationPresent(HtmxLocationResponse.class)) {
 			HtmxLocation location = convertToLocation(
 					AnnotatedElementUtils.findMergedAnnotation(method, HtmxLocationResponse.class));
@@ -81,6 +80,23 @@ public class HtmxDetailExtractor implements HyperTextDetailExtractor {
 			details.put(HtmxResponseHeader.HX_RESWAP.getValue(), HyperTextDetail.of(reswap));
 		}
 		return details;
+	}
+
+
+
+	private HyperTextDetail detail(AnnotationAttributes attrs, String attrName) {
+		String[] values = attrs.getStringArray(attrName);
+		HyperTextDetail detail = HyperTextDetail.of(new LinkedHashMap<>());
+		for (String key : values) {
+			String value = null;
+			if (key.contains("=")) {
+				value = key.substring(key.indexOf("=") + 1).trim();
+				key = key.substring(0, key.indexOf("=")).trim();
+			}
+			detail.asMap().put(key,
+					value == null ? Map.of() : value);
+		}
+		return detail;
 	}
 
 	private HtmxLocation convertToLocation(HtmxLocationResponse annotation) {
