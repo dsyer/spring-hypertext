@@ -27,7 +27,7 @@ import org.springframework.hypertext.webmvc.htmx.HtmxTriggerResponse.HtmxTrigger
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(HtmxTriggerResponses.class)
 public @interface HtmxTriggerResponse {
-	String value();
+	String[] value();
 	HtmxTriggerLifecycle lifecycle() default HtmxTriggerLifecycle.RECEIVE;
 	@Target({ElementType.TYPE, ElementType.METHOD})
 	@Retention(RetentionPolicy.RUNTIME)
