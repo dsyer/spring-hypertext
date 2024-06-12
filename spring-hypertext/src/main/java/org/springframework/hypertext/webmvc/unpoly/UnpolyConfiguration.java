@@ -19,10 +19,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.hypertext.webmvc.HyperTextConfiguration;
+import org.springframework.hypertext.webmvc.HyperTextHeaderConfiguration;
 
 @Configuration(proxyBeanMethods = false)
 @Import(HyperTextConfiguration.class)
-public class UnpolyConfiguration {
+public class UnpolyConfiguration implements HyperTextHeaderConfiguration {
 
 	@Bean
 	public UnpolyDetailExtractor unpolyDetailExtractor() {

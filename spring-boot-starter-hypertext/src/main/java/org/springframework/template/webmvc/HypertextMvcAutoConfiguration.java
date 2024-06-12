@@ -9,13 +9,11 @@ import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguratio
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.hypertext.webmvc.HyperTextConfiguration;
+import org.springframework.hypertext.webmvc.HyperTextHeaderConfiguration;
 import org.springframework.hypertext.webmvc.HyperTextRequestMappingHandlerMapping;
 import org.springframework.hypertext.webmvc.htmx.EnableHtmx;
-import org.springframework.hypertext.webmvc.htmx.HtmxConfiguration;
 import org.springframework.hypertext.webmvc.turbo.EnableTurbo;
-import org.springframework.hypertext.webmvc.turbo.TurboConfiguration;
 import org.springframework.hypertext.webmvc.unpoly.EnableUnpoly;
-import org.springframework.hypertext.webmvc.unpoly.UnpolyConfiguration;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 @AutoConfiguration
@@ -29,21 +27,30 @@ public class HypertextMvcAutoConfiguration implements WebMvcRegistrations {
 		return new HyperTextRequestMappingHandlerMapping();
 	}
 
-	@ConditionalOnMissingBean(HtmxConfiguration.class)
-	@ConditionalOnProperty(prefix = "hypertext.htmx", name = "enabled", havingValue = "true", matchIfMissing = true)
+	/**
+	 * Enables all of Htmx, Unpoly, and Turbo support if none is already available.
+	 * Each one can be switched off using the corresponding enabled property.
+	 */
+	@ConditionalOnMissingBean(HyperTextHeaderConfiguration.class)
 	@Configuration(proxyBeanMethods = false)
-	@EnableHtmx
-	static class HtmxAutoConfiguration {}
+	static class EnableHyperTextConfiguration {
 
-	@ConditionalOnMissingBean(UnpolyConfiguration.class)
-	@ConditionalOnProperty(prefix = "hypertext.unpoly", name = "enabled", havingValue = "true", matchIfMissing = true)
-	@Configuration(proxyBeanMethods = false)
-	@EnableUnpoly
-	static class UnpolyAutoConfiguration {}
+		@ConditionalOnProperty(prefix = "hypertext.htmx", name = "enabled", havingValue = "true", matchIfMissing = true)
+		@Configuration(proxyBeanMethods = false)
+		@EnableHtmx
+		static class HtmxAutoConfiguration {
+		}
 
-	@ConditionalOnMissingBean(TurboConfiguration.class)
-	@ConditionalOnProperty(prefix = "hypertext.turbo", name = "enabled", havingValue = "true", matchIfMissing = true)
-	@Configuration(proxyBeanMethods = false)
-	@EnableTurbo
-	static class TurboAutoConfiguration {}
+		@ConditionalOnProperty(prefix = "hypertext.unpoly", name = "enabled", havingValue = "true", matchIfMissing = true)
+		@Configuration(proxyBeanMethods = false)
+		@EnableUnpoly
+		static class UnpolyAutoConfiguration {
+		}
+
+		@ConditionalOnProperty(prefix = "hypertext.turbo", name = "enabled", havingValue = "true", matchIfMissing = true)
+		@Configuration(proxyBeanMethods = false)
+		@EnableTurbo
+		static class TurboAutoConfiguration {
+		}
+	}
 }

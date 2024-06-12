@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.hypertext.webmvc.turbo;
+package org.springframework.hypertext.webmvc;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.hypertext.webmvc.HyperTextConfiguration;
-import org.springframework.hypertext.webmvc.HyperTextHeaderConfiguration;
-
-@Configuration(proxyBeanMethods = false)
-@Import(HyperTextConfiguration.class)
-public class TurboConfiguration implements HyperTextHeaderConfiguration {
+/**
+ * Marker interface for configuration of header customizations in Spring Hypertext.
+ * It provides methods to configure the HyperText header settings.
+ */
+public interface HyperTextHeaderConfiguration {
 }
