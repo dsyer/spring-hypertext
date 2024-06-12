@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.hypertext.webmvc.HyperTextConfiguration;
 import org.springframework.hypertext.webmvc.HyperTextHeaderConfiguration;
 import org.springframework.hypertext.webmvc.HyperTextRequestMappingHandlerMapping;
 import org.springframework.hypertext.webmvc.htmx.EnableHtmx;
@@ -18,8 +17,8 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 @AutoConfiguration
 @ConditionalOnWebApplication
-@ConditionalOnMissingBean(HyperTextConfiguration.class)
 @AutoConfigureBefore({ WebMvcAutoConfiguration.class })
+
 public class HypertextMvcAutoConfiguration implements WebMvcRegistrations {
 
 	@Override

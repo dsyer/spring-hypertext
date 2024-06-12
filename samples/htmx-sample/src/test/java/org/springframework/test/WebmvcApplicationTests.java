@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class WebmvcApplicationTests {
 
 	public static void main(String[] args) {
-		SpringApplication.run(WebmvcApplication.class, args);
+		SpringApplication.run(WebmvcApplication.class, "--debug=true");
 	}
 
 	@Test
